@@ -1,3 +1,7 @@
-$('.show-items').on('click', (e) => {
-  console.log('yo')
+$('.show-items').on('click', () => {
+  $('.garage').show()
+})
+
+$(() => {
+  $('.garage').hide()
 })
