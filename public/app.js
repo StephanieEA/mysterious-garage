@@ -10,6 +10,7 @@ const Storage = function () {
   this.count = $('.counts')
   this.search = $('.search')
   this.all = null
+  this.displayItem = $('.display-item')
   return this
 }
 
@@ -69,9 +70,8 @@ Storage.prototype.updateItem = (id, cleanliness) => {
 
 Storage.prototype.renderItem = (response) => {
   storage.showItems.append(`
-      <article id="${response.id}"
-        class="response-article">
-        <h2>${response.name}</h2>
+      <article id="${response.id}" class="response-article">
+        <button class="display-item">${response.name}</button>
         <p>${response.reason}</p>
         <select name="cleanliness">
           <option value="Sparkling">Sparkling</option>
@@ -107,10 +107,15 @@ Storage.prototype.searchByName = (e) => {
 
 const storage = new Storage
 
+storage.garageDoor.on('click', () => storage.garage.show())
+
+storage.search.on('keyup', (e) => storage.searchByName(e))
+
 storage.submitItemButton.on('click', (e) => {
   e.preventDefault()
 
-  storage.addItem(storage.nameInput.val(), storage.reasonInput.val(),  storage.formatCleanliness(e))
+  storage.addItem(storage.nameInput.val(), storage.reasonInput.val(),
+                  storage.formatCleanliness(e))
 })
 
 storage.garage.on('click', '.update-cleanliness', (e) => {
@@ -120,11 +125,12 @@ storage.garage.on('click', '.update-cleanliness', (e) => {
   storage.updateItem(id, cleanliness)
 })
 
-storage.garageDoor.on('click', () => {
-  storage.garage.show()
+storage.garage.on('click', storage.displayItem, (e) => {
+  let id = e.target.closest('article').id
+  let chosen = storage.all.find(item => item.id === id)
+  storage.showItems.empty()
+  storage.renderItem(chosen)
 })
-
-storage.search.on('keyup', (e) => storage.searchByName(e))
 
 $(() => {
   storage.garage.hide()
