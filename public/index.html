@@ -14,7 +14,11 @@
       <form class="add-item-form">
         <input placeholder="Enter Item Name" class='name-input'/>
         <input placeholder="Enter Reason for Storage" class='reason-input'/>
-        <input placeholder="Enter Cleanliness Level" class='cleanliness-input'/>
+        <select name="cleanliness">
+          <option value="Sparkling">Sparkling</option>
+          <option value="Dusty">Dusty</option>
+          <option value="Rancid">Rancid</option>
+        </select>
         <button class='submit-item-button'>Submit</button>
       </form>
       <section class="show-items"></section>

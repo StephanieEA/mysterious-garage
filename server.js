@@ -12,12 +12,20 @@ app.locals.items = [
   { id: '1',
   name: 'Hubcap',
   reason: 'Future mixed media project',
-  cleanliness: 'Rancid'
+  cleanliness: {
+                Sparkling: true,
+                Dusty: false,
+                Rancid: false
+                }
   },
   { id: '2',
    name: 'Curtains',
    reason: 'Cool pattern',
-   cleanliness: 'Dusty'
+   cleanliness: {
+                 Sparkling: false,
+                 Dusty: true,
+                 Rancid: false
+                 }
   }
 ]
 

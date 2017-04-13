@@ -3,7 +3,7 @@ const Storage = function () {
   this.garage = $('.garage')
   this.nameInput = $('.name-input')
   this.reasonInput = $('.reason-input')
-  this.cleanlinessInput = $('.cleanliness-input')
+  this.cleanlinessInput = $('.cleanliness')
   this.submitItemButton = $('.submit-item-button')
   this.showItems = $('.show-items')
   this.updateCleanliness = $('.update-cleanliness')
@@ -14,7 +14,6 @@ Storage.prototype.loadItems = () => {
   fetch(`http://localhost:3000/items`)
     .then(response => response.json())
     .then(response => {
-      console.log(response)
       response.forEach(item => {
         storage.renderItem(item)
       })
@@ -55,14 +54,17 @@ Storage.prototype.updateItem = (id, cleanliness) => {
 }
 
 Storage.prototype.renderItem = (response) => {
+  console.log(response.cleanliness)
   storage.showItems.append(`
       <article id="${response.id}"
         class="response-article">
         <h2>${response.name}</h2>
         <p>${response.reason}</p>
-        <p contenteditable>${response.cleanliness}
-          <button class='update-cleanliness'>update</button>
-        </p>
+        <select name="cleanliness">
+          <option value="Sparkling">Sparkling</option>
+          <option value="Dusty">Dusty</option>
+          <option value="Rancid">Rancid</option>
+        </select>
       </article>
       `)
 }
@@ -71,7 +73,8 @@ const storage = new Storage
 
 storage.submitItemButton.on('click', (e) => {
   e.preventDefault()
-  storage.addItem(storage.nameInput.val(), storage.reasonInput.val(), storage.cleanlinessInput.val())
+
+  storage.addItem(storage.nameInput.val(), storage.reasonInput.val(), e.target.previousElementSibling.value)
 })
 
 storage.garage.on('click', '.update-cleanliness', (e) => {
