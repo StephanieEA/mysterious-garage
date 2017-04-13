@@ -8,6 +8,8 @@ const Storage = function () {
   this.showItems = $('.show-items')
   this.updateCleanliness = $('.update-cleanliness')
   this.count = $('.counts')
+  this.search = $('.search')
+  this.all = null
   return this
 }
 
@@ -15,6 +17,7 @@ Storage.prototype.loadItems = () => {
   fetch(`http://localhost:3000/items`)
     .then(response => response.json())
     .then(response => {
+      storage.all = response
       storage.renderItemCounts(response)
       response.forEach(item => {
         storage.renderItem(item)
@@ -65,7 +68,6 @@ Storage.prototype.updateItem = (id, cleanliness) => {
 }
 
 Storage.prototype.renderItem = (response) => {
-  console.log(response.cleanliness)
   storage.showItems.append(`
       <article id="${response.id}"
         class="response-article">
@@ -90,6 +92,19 @@ Storage.prototype.formatCleanliness = (e) => {
   return Object.assign(format, {[selected]: true})
 }
 
+Storage.prototype.searchByName = (e) => {
+  storage.showItems.empty()
+  let searchText = e.target.value.toLowerCase()
+  if (searchText === '') {
+    return storage.all.forEach(item => storage.renderItem(item))
+  } else {
+    let matches = storage.all.filter(item => {
+      return item.name.toLowerCase().includes(searchText)
+    })
+    matches.forEach(match => storage.renderItem(match))
+  }
+}
+
 const storage = new Storage
 
 storage.submitItemButton.on('click', (e) => {
@@ -109,6 +124,7 @@ storage.garageDoor.on('click', () => {
   storage.garage.show()
 })
 
+storage.search.on('keyup', (e) => storage.searchByName(e))
 
 $(() => {
   storage.garage.hide()
