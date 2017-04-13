@@ -47,6 +47,21 @@ app.post('/items', (request, response) => {
   response.status(201).json({ id, name, reason, cleanliness })
 })
 
+
+app.put('/items/:id', (request, response) => {
+  const { id } = request.params
+  const { name, reason, cleanliness } = request.body
+
+  let item = app.locals.items.find(item => item.id === id)
+
+  item.name = name
+  item.reason = reason
+  item.cleanliness = cleanliness
+
+  if(!item) { return response.sendStatus(404) }
+  response.json(item)
+})
+
 app.listen(app.get('port'), () => {
   console.log(`${app.locals.title} is running on ${app.get('port')}.`)
 })
