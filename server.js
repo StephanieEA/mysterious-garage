@@ -22,7 +22,7 @@ app.locals.items = [
 ]
 
 app.get('/items', (request, response) => {
-  response.json(app.locals.items)
+  response.status(200).json(app.locals.items)
 })
 
 app.get('/items/:id', (request, response) => {
@@ -30,7 +30,7 @@ app.get('/items/:id', (request, response) => {
   const item = app.locals.items.find(item => item.id === id)
 
   if (!item) return response.sendStatus(404)
-  response.json(item)
+  response.status(200).json(item)
 })
 
 app.post('/items', (request, response) => {
@@ -52,14 +52,15 @@ app.put('/items/:id', (request, response) => {
   const { id } = request.params
   const { name, reason, cleanliness } = request.body
 
-  let item = app.locals.items.find(item => item.id === id)
+  const item = app.locals.items.find(item => item.id === id)
 
-  item.name = name
-  item.reason = reason
-  item.cleanliness = cleanliness
+  if (name) item.name = name
+  if (reason) item.reason = reason
+  if (cleanliness) item.cleanliness = cleanliness
 
-  if(!item) { return response.sendStatus(404) }
-  response.json(item)
+  if(!item) response.status(404)
+
+  response.status(200).json(item)
 })
 
 app.listen(app.get('port'), () => {
