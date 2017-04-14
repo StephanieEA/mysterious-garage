@@ -6,11 +6,10 @@ const Storage = function () {
   this.cleanlinessInput = $('.cleanliness')
   this.submitItemButton = $('.submit-item-button')
   this.showItems = $('.show-items')
-  this.updateCleanliness = $('.update-cleanliness')
   this.count = $('.counts')
   this.search = $('.search')
-  this.all = null
   this.displayItem = $('.display-item')
+  this.all = null
   return this
 }
 
@@ -18,6 +17,7 @@ Storage.prototype.loadItems = () => {
   fetch(`http://localhost:3000/items`)
     .then(response => response.json())
     .then(response => {
+      console.log(response)
       storage.all = response
       storage.renderItemCounts(response)
       response.forEach(item => {
@@ -51,6 +51,8 @@ Storage.prototype.addItem = (name, reason, cleanliness) => {
       storage.count.empty()
       storage.showItems.empty()
       storage.loadItems()
+      storage.nameInput.val('')
+      storage.reasonInput.val('')
     })
 }
 
@@ -80,16 +82,21 @@ Storage.prototype.renderItem = (response) => {
         </select>
       </article>
       `)
+  storage.renderCleanlinessSelection(response)
 }
 
-Storage.prototype.formatCleanliness = (e) => {
-  const selected = e.target.previousElementSibling.value
+Storage.prototype.renderCleanlinessSelection = (response) => {
+  var keys = Object.keys(response.cleanliness)
+  $(`#${response.id} select`).val(keys.find(option => response.cleanliness[option]))
+}
+
+Storage.prototype.formatCleanliness = (e, selection) => {
   const format = {
     Sparkling: false,
     Dusty: false,
     Rancid: false
   }
-  return Object.assign(format, {[selected]: true})
+  return Object.assign(format, {[selection]: true})
 }
 
 Storage.prototype.searchByName = (e) => {
@@ -107,28 +114,33 @@ Storage.prototype.searchByName = (e) => {
 
 const storage = new Storage
 
-storage.garageDoor.on('click', () => storage.garage.show())
+storage.garageDoor.on('click', () => {
+  storage.garage.show()
+  storage.garageDoor.remove()
+})
 
 storage.search.on('keyup', (e) => storage.searchByName(e))
 
 storage.submitItemButton.on('click', (e) => {
   e.preventDefault()
+  const selection = e.target.previousElementSibling.value
 
   storage.addItem(storage.nameInput.val(), storage.reasonInput.val(),
-                  storage.formatCleanliness(e))
+                  storage.formatCleanliness(e, selection))
 })
 
-storage.garage.on('click', '.update-cleanliness', (e) => {
+storage.garage.on('change', 'article select', (e) => {
   const id = e.target.closest('article').id
-  const cleanliness = e.target.closest('p').innerText
+  const selection = e.target.value
 
-  storage.updateItem(id, cleanliness)
+  storage.updateItem(id, storage.formatCleanliness(e, selection))
 })
 
-storage.garage.on('click', storage.displayItem, (e) => {
+storage.garage.on('click', '.display-item', (e) => {
   let id = e.target.closest('article').id
   let chosen = storage.all.find(item => item.id === id)
   storage.showItems.empty()
+  storage.count.empty()
   storage.renderItem(chosen)
 })
 

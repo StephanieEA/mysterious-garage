@@ -1,7 +1,54 @@
 body {
   text-align: center;
+  background: #efefef;
 }
 
-.garage {
-  
+h1 {
+  background: #001514;
+  color: #7EBDC3;
+  letter-spacing: 1px;
+  padding: 10px 0;
+}
+
+input {
+  width: 200px;
+  padding: 5px;
+}
+
+option {
+  padding: 45px;
+}
+
+select {
+  height: 30px;
+  width: 100px;
+}
+
+button {
+  padding: 6px;
+  border-radius: 5px;
+}
+
+article {
+  background: #001514;
+  color: #7EBDC3;
+  display: inline-block;
+  margin: 15px;
+  padding: 15px;
+}
+
+article > button {
+  background: #7EBDC3;
+  color: indigo;
+  border: none;
+  letter-spacing: 1px;
+  padding: 5px 15px;
+}
+
+.counts {
+  float: left;
+  background: #0D1321;
+  color: #D4D2D5;
+  margin: 15px;
+  padding: 15px;
 }
