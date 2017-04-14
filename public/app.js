@@ -14,7 +14,7 @@ const Storage = function () {
 }
 
 Storage.prototype.loadItems = () => {
-  fetch(`http://localhost:3000/items`)
+  fetch(`/items`)
     .then(response => response.json())
     .then(response => {
       console.log(response)
@@ -34,7 +34,7 @@ Storage.prototype.renderItemCounts = (response) => {
 }
 
 Storage.prototype.addItem = (name, reason, cleanliness) => {
-  fetch(`http://localhost:3000/items`,
+  fetch(`/items`,
     {
       method:'POST',
       headers: {
@@ -57,7 +57,7 @@ Storage.prototype.addItem = (name, reason, cleanliness) => {
 }
 
 Storage.prototype.updateItem = (id, cleanliness) => {
-  fetch(`http://localhost:3000/items/${id}`,
+  fetch(`/items/${id}`,
     {
       method:'PUT',
       headers: {
