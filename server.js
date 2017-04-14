@@ -1,11 +1,13 @@
 const express = require('express')
-const app = express()
 const bodyParser = require('body-parser')
+const path = require('path');
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+const app = express()
 
 app.set('port', process.env.PORT || 3000)
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(express.static(path.join(__dirname, '/public')))
 
 app.locals.title = 'Mysterious garage'
 app.locals.items = [
@@ -29,6 +31,10 @@ app.locals.items = [
   }
 ]
 
+app.get('/', (request, response) => {
+  response.sendfile(__dirname + '/public/index.html')
+});
+
 app.get('/items', (request, response) => {
   response.status(200).json(app.locals.items)
 })
@@ -43,7 +49,7 @@ app.get('/items/:id', (request, response) => {
 
 app.post('/items', (request, response) => {
   const { name, reason, cleanliness } = request.body
-  const id = Date.now()
+  const id = JSON.stringify(Date.now())
 
   if (!name || !reason || !cleanliness) {
     return response.status(422).send({
