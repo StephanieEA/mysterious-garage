@@ -14,7 +14,7 @@ const Storage = function () {
 }
 
 Storage.prototype.loadItems = () => {
-  fetch(`/items`)
+  fetch(`http://localhost:3000/items`)
     .then(response => response.json())
     .then(response => {
       console.log(response)
@@ -48,6 +48,7 @@ Storage.prototype.addItem = (name, reason, cleanliness) => {
     })
     .then(response => {
       response.json()
+      console.log(response)
       storage.count.empty()
       storage.showItems.empty()
       storage.loadItems()
