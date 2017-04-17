@@ -18,6 +18,7 @@ Storage.prototype.loadItems = () => {
   fetch(`http://localhost:3000/items`)
     .then(response => response.json())
     .then(response => {
+      console.log(response)
       storage.all = response
       storage.renderItemCounts(response)
       response.forEach(item => {
@@ -34,7 +35,7 @@ Storage.prototype.renderItemCounts = (response) => {
 }
 
 Storage.prototype.addItem = (name, reason, cleanliness) => {
-  fetch(`/items`,
+  fetch(`http://localhost:3000/items`,
     {
       method:'POST',
       headers: {
@@ -57,7 +58,7 @@ Storage.prototype.addItem = (name, reason, cleanliness) => {
 }
 
 Storage.prototype.updateItem = (id, cleanliness) => {
-  fetch(`/items/${id}`,
+  fetch(`http://localhost:3000/items/${id}`,
     {
       method:'PUT',
       headers: {
@@ -67,6 +68,14 @@ Storage.prototype.updateItem = (id, cleanliness) => {
         cleanliness: cleanliness
       })
     })
+  .then(response => response.json())
+  .then(response => {
+    storage.all = response
+    storage.showItems.empty()
+    storage.count.empty()
+    // storage.garage.empty()
+    storage.loadItems()
+  })
 }
 
 Storage.prototype.renderItem = (response) => {
@@ -154,6 +163,8 @@ storage.garage.on('change', 'article select', (e) => {
   const selection = e.target.value
 
   storage.updateItem(id, storage.formatCleanliness(selection))
+  storage.count.empty()
+  storage.renderItemCounts(storage.all)
 })
 
 storage.garage.on('click', '.display-item', (e) => {

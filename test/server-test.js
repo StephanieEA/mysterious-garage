@@ -99,11 +99,12 @@ describe('PUT /items/:id', function() {
       .end(function (err, res) {
         res.should.have.status(200);
         res.should.be.json;
-        res.body.should.be.a('object');
-        res.body.should.have.property('name', 'Hubcap');
-        res.body.should.have.property('reason', 'Future mixed media project');
-        res.body.should.have.property('id');
-        res.body.cleanliness.should.deep.equal({Sparkling: false, Dusty: false, Rancid: true});
+        res.body.should.be.a('array');
+        res.body.should.have.length(3)
+        res.body[0].should.have.property('name', 'Hubcap');
+        res.body[0].should.have.property('reason', 'Future mixed media project');
+        res.body[0].should.have.property('id');
+        res.body[0].cleanliness.should.deep.equal({Sparkling: false, Dusty: false, Rancid: true});
         done()
       })
     })

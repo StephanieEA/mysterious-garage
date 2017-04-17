@@ -94,7 +94,7 @@ app.put('/items/:id', (request, response) => {
   if (cleanliness) item.cleanliness = cleanliness
 
 
-  response.status(200).json(item)
+  response.status(200).json(app.locals.items)
 })
 
 app.listen(app.get('port'), () => {
