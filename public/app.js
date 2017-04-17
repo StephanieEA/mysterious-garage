@@ -19,7 +19,6 @@ Storage.prototype.loadItems = () => {
     .then(response => response.json())
     .then(response => {
       storage.all = response
-      console.log(storage.all)
       storage.renderItemCounts(response)
       response.forEach(item => {
         storage.renderItem(item)
@@ -49,7 +48,6 @@ Storage.prototype.addItem = (name, reason, cleanliness) => {
     })
     .then(response => {
       response.json()
-      console.log(response)
       storage.count.empty()
       storage.showItems.empty()
       storage.loadItems()
@@ -69,7 +67,6 @@ Storage.prototype.updateItem = (id, cleanliness) => {
         cleanliness: cleanliness
       })
     })
-  .then(response => console.log(response))
 }
 
 Storage.prototype.renderItem = (response) => {
@@ -92,7 +89,7 @@ Storage.prototype.renderCleanlinessSelection = (response) => {
   $(`#${response.id} select`).val(keys.find(option => response.cleanliness[option]))
 }
 
-Storage.prototype.formatCleanliness = (e, selection) => {
+Storage.prototype.formatCleanliness = (selection) => {
   const format = {
     Sparkling: false,
     Dusty: false,
@@ -101,33 +98,38 @@ Storage.prototype.formatCleanliness = (e, selection) => {
   return Object.assign(format, {[selection]: true})
 }
 
-Storage.prototype.searchByName = (e) => {
+Storage.prototype.searchByName = (e, all) => {
   storage.showItems.empty()
   let searchText = e.target.value.toLowerCase()
   if (searchText === '') {
-    return storage.all.forEach(item => storage.renderItem(item))
+    all.forEach(item => storage.renderItem(item))
+    return all
   } else {
-    let matches = storage.all.filter(item => {
-      return item.name.toLowerCase().includes(searchText)
+    let matches = all.filter(item => {
+    return item.name.toLowerCase().includes(searchText)
     })
     matches.forEach(match => storage.renderItem(match))
+    return matches
   }
+
 }
 
-Storage.prototype.sortAscendingAlphabetically = () => {
-  const sorted = storage.all.sort((a,b) => {
+Storage.prototype.sortAscendingAlphabetically = (all) => {
+  const sorted = all.sort((a,b) => {
     return a.name.toLowerCase() > b.name.toLowerCase()
   })
   storage.showItems.empty()
   sorted.forEach(item => storage.renderItem(item))
+  return sorted
 }
 
-Storage.prototype.sortDescendingAlphabetically = () => {
-  const sorted = storage.all.sort((a,b) => {
+Storage.prototype.sortDescendingAlphabetically = (all) => {
+  const sorted = all.sort((a,b) => {
     return b.name.toLowerCase() > a.name.toLowerCase()
   })
   storage.showItems.empty()
   sorted.forEach(item => storage.renderItem(item))
+  return sorted
 }
 
 const storage = new Storage
@@ -137,21 +139,21 @@ storage.garageDoor.on('click', () => {
   storage.garageDoor.remove()
 })
 
-storage.search.on('keyup', (e) => storage.searchByName(e))
+storage.search.on('keyup', (e) => storage.searchByName(e, storage.all))
 
 storage.submitItemButton.on('click', (e) => {
   e.preventDefault()
   const selection = e.target.previousElementSibling.value
 
   storage.addItem(storage.nameInput.val(), storage.reasonInput.val(),
-                  storage.formatCleanliness(e, selection))
+                  storage.formatCleanliness(selection))
 })
 
 storage.garage.on('change', 'article select', (e) => {
   const id = e.target.closest('article').id
   const selection = e.target.value
 
-  storage.updateItem(id, storage.formatCleanliness(e, selection))
+  storage.updateItem(id, storage.formatCleanliness(selection))
 })
 
 storage.garage.on('click', '.display-item', (e) => {
@@ -165,11 +167,11 @@ storage.garage.on('click', '.display-item', (e) => {
 storage.garage.on('click', '.alphabetical-sort', (e) => {
   storage.toggleSort = !storage.toggleSort
   if (storage.toggleSort) {
-    storage.sortAscendingAlphabetically()
+    storage.sortAscendingAlphabetically(storage.all)
     storage.sortButon.text('Sort Z-A')
   }
   else {
-    storage.sortDescendingAlphabetically()
+    storage.sortDescendingAlphabetically(storage.all)
     storage.sortButon.text('Sort A-Z')
   }
 })
