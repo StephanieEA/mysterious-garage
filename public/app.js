@@ -8,8 +8,8 @@ const Storage = function () {
   this.showItems = $('.show-items')
   this.count = $('.counts')
   this.search = $('.search')
-  this.displayItem = $('.display-item')
-  this.sortAlphabeticlaly = $('.alphabetical-sort')
+  this.sortButon = $('.alphabetical-sort')
+  this.toggleSort = false
   this.all = null
   return this
 }
@@ -114,10 +114,18 @@ Storage.prototype.searchByName = (e) => {
   }
 }
 
-Storage.prototype.sortAlphabetically = () => {
-  const sorted = storage.all.sort((a,b) {
+Storage.prototype.sortAscendingAlphabetically = () => {
+  const sorted = storage.all.sort((a,b) => {
     return a.name.toLowerCase() > b.name.toLowerCase()
-  )}
+  })
+  storage.showItems.empty()
+  sorted.forEach(item => storage.renderItem(item))
+}
+
+Storage.prototype.sortDescendingAlphabetically = () => {
+  const sorted = storage.all.sort((a,b) => {
+    return b.name.toLowerCase() > a.name.toLowerCase()
+  })
   storage.showItems.empty()
   sorted.forEach(item => storage.renderItem(item))
 }
@@ -155,7 +163,15 @@ storage.garage.on('click', '.display-item', (e) => {
 })
 
 storage.garage.on('click', '.alphabetical-sort', (e) => {
-  storage.sortAlphabetically()
+  storage.toggleSort = !storage.toggleSort
+  if (storage.toggleSort) {
+    storage.sortAscendingAlphabetically()
+    storage.sortButon.text('Sort Z-A')
+  }
+  else {
+    storage.sortDescendingAlphabetically()
+    storage.sortButon.text('Sort A-Z')
+  }
 })
 
 $(() => {
