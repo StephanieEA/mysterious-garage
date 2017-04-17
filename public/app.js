@@ -9,6 +9,7 @@ const Storage = function () {
   this.count = $('.counts')
   this.search = $('.search')
   this.displayItem = $('.display-item')
+  this.sortAlphabeticlaly = $('.alphabetical-sort')
   this.all = null
   return this
 }
@@ -17,8 +18,8 @@ Storage.prototype.loadItems = () => {
   fetch(`http://localhost:3000/items`)
     .then(response => response.json())
     .then(response => {
-      console.log(response)
       storage.all = response
+      console.log(storage.all)
       storage.renderItemCounts(response)
       response.forEach(item => {
         storage.renderItem(item)
@@ -113,6 +114,14 @@ Storage.prototype.searchByName = (e) => {
   }
 }
 
+Storage.prototype.sortAlphabetically = () => {
+  const sorted = storage.all.sort((a,b) {
+    return a.name.toLowerCase() > b.name.toLowerCase()
+  )}
+  storage.showItems.empty()
+  sorted.forEach(item => storage.renderItem(item))
+}
+
 const storage = new Storage
 
 storage.garageDoor.on('click', () => {
@@ -143,6 +152,10 @@ storage.garage.on('click', '.display-item', (e) => {
   storage.showItems.empty()
   storage.count.empty()
   storage.renderItem(chosen)
+})
+
+storage.garage.on('click', '.alphabetical-sort', (e) => {
+  storage.sortAlphabetically()
 })
 
 $(() => {

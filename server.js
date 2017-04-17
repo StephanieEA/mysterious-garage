@@ -37,14 +37,23 @@ app.locals.items = [
                  Dusty: true,
                  Rancid: false
                  }
+  },
+  { id: '3',
+   name: 'Batman',
+   reason: 'sentimental',
+   cleanliness: {
+                 Sparkling: false,
+                 Dusty: true,
+                 Rancid: false
+                 }
   }
 ]
 
-// app.get('/', (request, response) => {
-//   fs.readFile(`${__dirname}/index.html`, (err, file) => {
-//     response.send(file)
-//   })
-// })
+app.get('/', (request, response) => {
+  fs.readFile(`${__dirname}/index.html`, (err, file) => {
+    response.send(file)
+  })
+})
 
 app.get('/items', (request, response) => {
   response.status(200).json(app.locals.items)
